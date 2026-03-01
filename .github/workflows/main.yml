@@ -1,20 +1,30 @@
-name: Sync to Hugging Face hub
+name: Sync Models to Hugging Face
+
 on:
   push:
     branches: [main]
-
-  # to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
-      - name: Push to hub
+
+      - name: Install Git LFS
+        run: git lfs install
+
+      - name: Push to Hugging Face Model Repo
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://moahmedwafy:$HF_TOKEN@huggingface.co/spaces/moahmedwafy/modarb-models-server main
+        run: |
+          git config --global user.email "riteekgore37@gmail.com"
+          git config --global user.name "riteekgore"
+
+          git remote add hf https://riteekgore:$HF_TOKEN@huggingface.co/riteekgore/ai-fitness-coach-models
+          git push hf main --force

@@ -1,17 +1,26 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
+import sys
+
+# Import models
 from models.fitness_model import FitnessModel
 from models.nutrition_model import NutritionModel
+
+# 🔥 Fix pickle __main__ issue
+sys.modules['__main__'].FitnessModel = FitnessModel
+sys.modules['__main__'].NutritionModel = NutritionModel
 
 load_dotenv()
 
 HOST = os.getenv("FLASK_RUN_HOST", "0.0.0.0")
 FLASK_RUN_PORT = int(os.getenv("PORT", 10000))
 
+# Load models AFTER fixing pickle mapping
 fitness_model = FitnessModel.load()
 nutrition_model = NutritionModel()
 nutrition_model.load()
+
 app = Flask("model-server")
 
 
@@ -59,5 +68,4 @@ def nutrition_predict():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",
-port=FLASK_RUN_PORT)
+    app.run(host="0.0.0.0", port=FLASK_RUN_PORT)

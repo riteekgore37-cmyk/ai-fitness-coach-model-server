@@ -7,7 +7,7 @@ from models.nutrition_model import NutritionModel
 load_dotenv()
 
 HOST = os.getenv("FLASK_RUN_HOST", "0.0.0.0")
-FLASK_RUN_PORT = os.getenv("FLASK_RUN_PORT", 7860)
+FLASK_RUN_PORT = int(os.getenv("PORT", 10000))
 
 fitness_model = FitnessModel.load()
 nutrition_model = NutritionModel()
@@ -59,4 +59,5 @@ def nutrition_predict():
 
 
 if __name__ == "__main__":
-    app.run(host=HOST, port=FLASK_RUN_PORT)
+    app.run(host="0.0.0.0",
+port=FLASK_RUN_PORT)
